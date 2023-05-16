@@ -1,5 +1,6 @@
 package servlets;
 
+import db.Country;
 import db.DBConnector;
 import db.DBManager;
 import db.Item;
@@ -21,9 +22,13 @@ public class HomeServlet extends HttpServlet {
         String name = req.getParameter("name");
         String priceFrom = req.getParameter("priceFrom");
         String priceTo = req.getParameter("priceTo");
+        String countryId = req.getParameter("country_id");
+
+        ArrayList<Country> countries = DBConnector.getCountries();
+        req.setAttribute("strany", countries);
 
         if (name != null || priceFrom != null || priceTo != null) {
-            ArrayList<Item> items = DBConnector.searchItems(name, priceFrom, priceTo);
+            ArrayList<Item> items = DBConnector.searchItems(name, priceFrom, priceTo, countryId);
             req.setAttribute("tovary", items);
         } else {
             ArrayList<Item> items = DBConnector.getItems();

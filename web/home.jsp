@@ -1,5 +1,6 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="db.Item" %>
+<%@ page import="db.Country" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -20,14 +21,32 @@
                        name="name" placeholder="Insert name" value="<%=(name!=null?name:"")%>">
             </div>
             <div class="col-3">
+                <select name="country_id" class="form-select">
+                    <option value="0">All Countries</option>
+                    <%
+                        String countryId = request.getParameter("country_id");
+                        ArrayList<Country> countries = (ArrayList<Country>) request.getAttribute("strany");
+                        if(countries!=null){
+                            for(Country cnt : countries){
+                    %>
+                    <option value="<%=cnt.getId()%>" <%=(countryId!=null&&countryId.equals(cnt.getId()+"")?"selected":"")%> >
+                        <%=cnt.getName() + " / " + cnt.getCode()%>
+                    </option>
+                    <%
+                            }
+                        }
+                    %>
+                </select>
+            </div>
+            <div class="col-2">
                 <input type="number" class="form-control"
                        name="priceFrom" placeholder="Price from" value="<%=(priceFrom!=null?priceFrom:"")%>">
             </div>
-            <div class="col-3">
+            <div class="col-2">
                 <input type="search" class="form-control"
                        name="priceTo" placeholder="Price to" value="<%=(priceTo!=null?priceTo:"")%>">
             </div>
-            <div class="col-2">
+            <div class="col-1">
                 <button class="btn btn-success w-100">SEARCH</button>
             </div>
         </div>

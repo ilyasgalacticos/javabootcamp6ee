@@ -144,19 +144,21 @@ public class DBConnector {
         }
     }
 
-    public static ArrayList<Item> searchItems(String name, String priceFrom, String priceTo) {
+    public static ArrayList<Item> searchItems(String name, String priceFrom, String priceTo, String countryId) {
 
         ArrayList<Item> items = new ArrayList<>();
 
         try {
 
-            String query = "SELECT * FROM items " +
-                    "WHERE name LIKE ? ";
+            String query = "SELECT it.id, it.price, it.name, it.country_id, it.country_id, co.code, co.name AS countryName " +
+                    "FROM items AS it " +
+                    "INNER JOIN countries co ON co.id = it.country_id " +
+                    "WHERE it.name LIKE ? ";
 
             if (priceFrom != null) {
                 try{
                     int priceF = Integer.parseInt(priceFrom);
-                    query = query + " AND price >= "+priceF;
+                    query = query + " AND it.price >= "+priceF;
                 }catch (Exception ex){
                 }
             }
@@ -166,6 +168,19 @@ public class DBConnector {
                     query = query + " AND price <= "+priceT;
                 }catch (Exception ex){
                 }
+            }
+
+            int cntId = 0;
+
+            try{
+                if(countryId!=null){
+                    cntId = Integer.parseInt(countryId);
+                }
+            }catch (Exception e){
+            }
+
+            if(cntId!=0){
+                query = query + " AND it.country_id = "+cntId + " ";
             }
 
             PreparedStatement statement = connection.prepareStatement(query);
@@ -178,7 +193,13 @@ public class DBConnector {
                 item.setId(resultSet.getInt("id"));
                 item.setName(resultSet.getString("name"));
                 item.setPrice(resultSet.getInt("price"));
-                //item.setCountry(resultSet.getString("country"));
+
+                Country country = new Country();
+                country.setId(resultSet.getInt("country_id"));
+                country.setName(resultSet.getString("countryName"));
+                country.setCode(resultSet.getString("code"));
+                item.setCountry(country);
+
                 items.add(item);
             }
             statement.close();
