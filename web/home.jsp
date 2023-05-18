@@ -29,9 +29,9 @@
                         if(countries!=null){
                             for(Country cnt : countries){
                     %>
-                    <option value="<%=cnt.getId()%>" <%=(countryId!=null&&countryId.equals(cnt.getId()+"")?"selected":"")%> >
-                        <%=cnt.getName() + " / " + cnt.getCode()%>
-                    </option>
+                        <option value="<%=cnt.getId()%>" <%=(countryId!=null&&countryId.equals(cnt.getId()+"")?"selected":"")%> >
+                            <%=cnt.getName() + " / " + cnt.getCode()%>
+                        </option>
                     <%
                             }
                         }

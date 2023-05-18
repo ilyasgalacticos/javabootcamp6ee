@@ -2,6 +2,7 @@ package servlets;
 
 import db.DBConnector;
 import db.Item;
+import db.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,8 +16,13 @@ public class DeleteItemServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int id = Integer.parseInt(req.getParameter("item_id"));
-        DBConnector.deleteItem(id);
-        resp.sendRedirect("/");
+        User currentUser = (User) req.getSession().getAttribute("currentUser");
+        if(currentUser!=null) {
+            int id = Integer.parseInt(req.getParameter("item_id"));
+            DBConnector.deleteItem(id);
+            resp.sendRedirect("/");
+        }else {
+            resp.sendRedirect("/sign-in");
+        }
     }
 }

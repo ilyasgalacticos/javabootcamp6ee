@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -34,6 +35,10 @@ public class HomeServlet extends HttpServlet {
             ArrayList<Item> items = DBConnector.getItems();
             req.setAttribute("tovary", items);
         }
+
+        HttpSession session = req.getSession();
+        String text = (String) session.getAttribute("userName");
+        System.out.println(text);
 
         req.getRequestDispatcher("/home.jsp").forward(req, resp);
     }

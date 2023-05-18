@@ -3,6 +3,7 @@ package servlets;
 import db.Country;
 import db.DBConnector;
 import db.Item;
+import db.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,22 +18,28 @@ public class SaveItemServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        int id = Integer.parseInt(req.getParameter("item_id"));
-        String name = req.getParameter("item_name");
-        String price = req.getParameter("item_price");
-        int countryId = Integer.parseInt(req.getParameter("country_id"));
+        User currentUser = (User) req.getSession().getAttribute("currentUser");
+        if(currentUser!=null) {
 
-        Country country = DBConnector.getCountry(countryId);
-        Item item = DBConnector.getItem(id);
+            int id = Integer.parseInt(req.getParameter("item_id"));
+            String name = req.getParameter("item_name");
+            String price = req.getParameter("item_price");
+            int countryId = Integer.parseInt(req.getParameter("country_id"));
 
-        if (item != null && country != null) {
-            item.setName(name);
-            item.setPrice(Integer.parseInt(price));
-            item.setCountry(country);
-            DBConnector.saveItem(item);
-            resp.sendRedirect("/details?idshka=" + item.getId());
-        } else {
-            resp.sendRedirect("/");
+            Country country = DBConnector.getCountry(countryId);
+            Item item = DBConnector.getItem(id);
+
+            if (item != null && country != null) {
+                item.setName(name);
+                item.setPrice(Integer.parseInt(price));
+                item.setCountry(country);
+                DBConnector.saveItem(item);
+                resp.sendRedirect("/details?idshka=" + item.getId());
+            } else {
+                resp.sendRedirect("/");
+            }
+        }else{
+            resp.sendRedirect("/sign-in");
         }
     }
 }

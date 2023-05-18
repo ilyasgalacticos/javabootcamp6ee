@@ -1,3 +1,6 @@
+<%@ page import="db.User" %><%
+  User currentUser = (User) session.getAttribute("currentUser");
+%>
 <div class="container">
   <div class="row">
     <div class="col-12">
@@ -12,9 +15,27 @@
               <li class="nav-item">
                 <a class="nav-link" href="/">Home</a>
               </li>
+              <%
+                if(currentUser!=null){
+              %>
               <li class="nav-item">
                 <a class="nav-link" href="/add-item"> + Add Item</a>
               </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="/profile"> <%=currentUser.getFullName()%></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/sign-out"> Sign Out</a>
+                </li>
+              <%
+                }else{
+              %>
+                <li class="nav-item">
+                  <a class="nav-link" href="/sign-in"> Sign In</a>
+                </li>
+              <%
+                }
+              %>
             </ul>
           </div>
         </div>

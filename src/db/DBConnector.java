@@ -260,4 +260,28 @@ public class DBConnector {
         return country;
     }
 
+        public static User getUser(String email){
+        User user = null;
+        try{
+
+            PreparedStatement statement = connection.prepareStatement("" +
+                    "SELECT * FROM users WHERE email = ?");
+
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                user = new User();
+                user.setId(resultSet.getInt("id"));
+                user.setEmail(resultSet.getString("email"));
+                user.setPassword(resultSet.getString("password"));
+                user.setFullName(resultSet.getString("full_name"));
+            }
+            statement.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return user;
+    }
+
 }

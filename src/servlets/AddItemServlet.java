@@ -1,9 +1,6 @@
 package servlets;
 
-import db.Country;
-import db.DBConnector;
-import db.DBManager;
-import db.Item;
+import db.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,27 +15,39 @@ public class AddItemServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ArrayList<Country> countries = DBConnector.getCountries();
-        req.setAttribute("strany", countries);
-        req.getRequestDispatcher("/additem.jsp").forward(req, resp);
+        User currentUser = (User) req.getSession().getAttribute("currentUser");
+        if(currentUser!=null) {
+            ArrayList<Country> countries = DBConnector.getCountries();
+            req.setAttribute("strany", countries);
+            req.getRequestDispatcher("/additem.jsp").forward(req, resp);
+        }else{
+            resp.sendRedirect("/sign-in");
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String name = req.getParameter("item_name");
-        String price = req.getParameter("item_price");
-        int countryId = Integer.parseInt(req.getParameter("country_id"));
+        User currentUser = (User) req.getSession().getAttribute("currentUser");
+        if(currentUser!=null) {
 
-        Country country = DBConnector.getCountry(countryId);
-        if(country!=null) {
-            Item item = new Item();
-            item.setName(name);
-            item.setPrice(Integer.parseInt(price));
-            item.setCountry(country);
-            DBConnector.addItem(item);
+            String name = req.getParameter("item_name");
+            String price = req.getParameter("item_price");
+            int countryId = Integer.parseInt(req.getParameter("country_id"));
+
+            Country country = DBConnector.getCountry(countryId);
+            if(country!=null) {
+                Item item = new Item();
+                item.setName(name);
+                item.setPrice(Integer.parseInt(price));
+                item.setCountry(country);
+                DBConnector.addItem(item);
+            }
+
+            resp.sendRedirect("/");
+
+        }else{
+            resp.sendRedirect("/sign-in");
         }
-
-        resp.sendRedirect("/");
     }
 }
