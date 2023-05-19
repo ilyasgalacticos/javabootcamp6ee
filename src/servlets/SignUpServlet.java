@@ -1,8 +1,6 @@
 package servlets;
 
-import db.Country;
 import db.DBConnector;
-import db.Item;
 import db.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,29 +10,37 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
-@WebServlet(value = "/sign-in")
-public class LoginServlet extends HttpServlet {
+@WebServlet(value = "/sign-up")
+public class SignUpServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/signin.jsp").forward(req, resp);
+        req.getRequestDispatcher("/signup.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String redirect = "/sign-in?code=error";
+        String redirect = "/sign-up?code=password";
 
         String email = req.getParameter("email");
         String password = req.getParameter("password");
+        String rePassword = req.getParameter("re_password");
+        String fullName = req.getParameter("full_name");
 
-        User user = DBConnector.getUser(email);
-        if (user != null) {
-            if(user.getPassword().equals(password)){
-                HttpSession session = req.getSession();
-                session.setAttribute("currentUser", user);
-                redirect = "/profile";
+        if (password.equals(rePassword)) {
+            User user = DBConnector.getUser(email);
+            redirect = "/sign-up?code=email";
+
+            if (user == null) {
+
+                User createdUser = new User();
+                createdUser.setEmail(email);
+                createdUser.setPassword(password);
+                createdUser.setFullName(fullName);
+
+                DBConnector.addUser(createdUser);
+                redirect = "/sign-up?code=success";
             }
         }
         resp.sendRedirect(redirect);

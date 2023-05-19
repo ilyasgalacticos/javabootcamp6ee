@@ -11,6 +11,17 @@
         <div class="container mt-3">
             <div class="row mt-5">
                 <div class="col-6 mx-auto">
+                    <%
+                        String code = request.getParameter("code");
+                        if(code!=null && code.equals("error")){
+                    %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            Incorrect email or password!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <%
+                        }
+                    %>
                     <form action="/sign-in" method="post">
                         <div class="row">
                             <div class="col-12">
