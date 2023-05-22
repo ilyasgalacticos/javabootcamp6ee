@@ -19,7 +19,7 @@ public class SaveItemServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         User currentUser = (User) req.getSession().getAttribute("currentUser");
-        if(currentUser!=null) {
+        if (currentUser != null) {
 
             int id = Integer.parseInt(req.getParameter("item_id"));
             String name = req.getParameter("item_name");
@@ -29,7 +29,7 @@ public class SaveItemServlet extends HttpServlet {
             Country country = DBConnector.getCountry(countryId);
             Item item = DBConnector.getItem(id);
 
-            if (item != null && country != null) {
+            if (item != null && country != null && item.getUser().getId() == currentUser.getId()) {
                 item.setName(name);
                 item.setPrice(Integer.parseInt(price));
                 item.setCountry(country);
@@ -38,7 +38,7 @@ public class SaveItemServlet extends HttpServlet {
             } else {
                 resp.sendRedirect("/");
             }
-        }else{
+        } else {
             resp.sendRedirect("/sign-in");
         }
     }

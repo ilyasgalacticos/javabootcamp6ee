@@ -41,6 +41,8 @@ public class AddItemServlet extends HttpServlet {
                 item.setName(name);
                 item.setPrice(Integer.parseInt(price));
                 item.setCountry(country);
+                item.setUser(currentUser);
+
                 DBConnector.addItem(item);
             }
 

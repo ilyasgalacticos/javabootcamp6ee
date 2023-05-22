@@ -62,6 +62,7 @@
                     <th>NAME</th>
                     <th>PRICE</th>
                     <th>COUNTRY</th>
+                    <th>CREATED BY</th>
                     <th style="width: 10%;">DETAILS</th>
                 </tr>
                 </thead>
@@ -83,6 +84,9 @@
                             </td>
                             <td>
                                 <%=it.getCountry().getName()+" - " + it.getCountry().getCode()%>
+                            </td>
+                            <td>
+                                <%=it.getUser().getFullName()%>
                             </td>
                             <td>
                                 <a href="/details?idshka=<%=it.getId()%>" class="btn btn-success btn-sm">DETAILS</a>

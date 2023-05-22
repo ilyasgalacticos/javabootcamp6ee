@@ -7,6 +7,8 @@ public class Item {
     private int price;
     private Country country;
 
+    private User user;
+
     public Item(int id, String name, int price) {
         this.id = id;
         this.name = name;
@@ -16,6 +18,14 @@ public class Item {
     public Item() {
         this.name = "No Name";
         this.price = 0;
+    }
+
+    public Item(int id, String name, int price, Country country, User user) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.country = country;
+        this.user = user;
     }
 
     public Item(int id, String name, int price, Country country) {
@@ -60,6 +70,14 @@ public class Item {
 
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getData(){

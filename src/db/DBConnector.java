@@ -26,9 +26,11 @@ public class DBConnector {
         try {
 
             PreparedStatement statement = connection.prepareStatement("" +
-                    "SELECT it.id, it.price, it.name, it.country_id, it.country_id, co.code, co.name AS countryName " +
+                    "SELECT it.id, it.price, it.name, it.country_id, it.country_id, " +
+                    "co.code, co.name AS countryName, us.full_name, it.user_id, us.email " +
                     "FROM items AS it " +
-                    "INNER JOIN countries co ON co.id = it.country_id");
+                    "INNER JOIN countries co ON co.id = it.country_id " +
+                    "INNER JOIN users us ON us.id = it.user_id");
 
             ResultSet resultSet = statement.executeQuery();
 
@@ -43,6 +45,12 @@ public class DBConnector {
                 country.setName(resultSet.getString("countryName"));
                 country.setCode(resultSet.getString("code"));
                 item.setCountry(country);
+
+                User user = new User();
+                user.setId(resultSet.getInt("user_id"));
+                user.setEmail(resultSet.getString("email"));
+                user.setFullName(resultSet.getString("full_name"));
+                item.setUser(user);
 
                 items.add(item);
             }
@@ -60,12 +68,13 @@ public class DBConnector {
 
             PreparedStatement statement =
                     connection.prepareStatement("" +
-                            "INSERT INTO items (name, price, country_id) " +
-                            "VALUES (?, ?, ?)");
+                            "INSERT INTO items (name, price, country_id, user_id) " +
+                            "VALUES (?, ?, ?, ?)");
 
             statement.setString(1, item.getName());
             statement.setInt(2, item.getPrice());
             statement.setInt(3, item.getCountry().getId());
+            statement.setInt(4, item.getUser().getId());
             statement.executeUpdate();
             statement.close();
 
@@ -81,9 +90,11 @@ public class DBConnector {
         try {
             PreparedStatement statement = connection.prepareStatement(
                     "" +
-                            "SELECT it.id, it.price, it.name, it.country_id, it.country_id, co.code, co.name AS countryName " +
+                            "SELECT it.id, it.price, it.name, it.country_id, it.country_id, " +
+                            "co.code, co.name AS countryName, it.user_id, us.full_name, us.email " +
                             "FROM items AS it " +
                             "INNER JOIN countries co ON co.id = it.country_id " +
+                            "INNER JOIN users us ON us.id = it.user_id " +
                             "WHERE it.id = ?"
             );
             statement.setInt(1, id);
@@ -100,6 +111,12 @@ public class DBConnector {
                 country.setName(resultSet.getString("countryName"));
                 country.setCode(resultSet.getString("code"));
                 item.setCountry(country);
+
+                User user = new User();
+                user.setId(resultSet.getInt("user_id"));
+                user.setFullName(resultSet.getString("full_name"));
+                user.setEmail(resultSet.getString("email"));
+                item.setUser(user);
 
             }
             statement.close();
@@ -130,12 +147,14 @@ public class DBConnector {
         }
     }
 
-    public static void deleteItem(int id) {
+    public static void deleteItem(int id, int userId) {
         try {
 
             PreparedStatement statement = connection.prepareStatement("" +
-                    "DELETE FROM items WHERE id = ?");
+                    "DELETE FROM items WHERE id = ? AND user_id = ?");
             statement.setInt(1, id);
+            statement.setInt(2, userId);
+
             statement.executeUpdate();
             statement.close();
 
@@ -150,9 +169,11 @@ public class DBConnector {
 
         try {
 
-            String query = "SELECT it.id, it.price, it.name, it.country_id, it.country_id, co.code, co.name AS countryName " +
+            String query = "SELECT it.id, it.price, it.name, it.country_id, it.country_id, " +
+                    "co.code, co.name AS countryName, us.full_name, it.user_id, us.email " +
                     "FROM items AS it " +
                     "INNER JOIN countries co ON co.id = it.country_id " +
+                    "INNER JOIN users us ON us.id = it.user_id " +
                     "WHERE it.name LIKE ? ";
 
             if (priceFrom != null) {
@@ -199,6 +220,12 @@ public class DBConnector {
                 country.setName(resultSet.getString("countryName"));
                 country.setCode(resultSet.getString("code"));
                 item.setCountry(country);
+
+                User user = new User();
+                user.setId(resultSet.getInt("user_id"));
+                user.setEmail(resultSet.getString("email"));
+                user.setFullName(resultSet.getString("full_name"));
+                item.setUser(user);
 
                 items.add(item);
             }

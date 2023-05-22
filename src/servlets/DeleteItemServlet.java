@@ -19,7 +19,7 @@ public class DeleteItemServlet extends HttpServlet {
         User currentUser = (User) req.getSession().getAttribute("currentUser");
         if(currentUser!=null) {
             int id = Integer.parseInt(req.getParameter("item_id"));
-            DBConnector.deleteItem(id);
+            DBConnector.deleteItem(id, currentUser.getId());
             resp.sendRedirect("/");
         }else {
             resp.sendRedirect("/sign-in");
