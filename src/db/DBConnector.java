@@ -329,7 +329,68 @@ public class DBConnector {
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
+    public static void addComment(Comment comment){
+        try{
+
+            PreparedStatement statement = connection.prepareStatement("" +
+                    "INSERT INTO comments (item_id, user_id, comment, post_date) " +
+                    "VALUES (?, ?, ?, NOW())");
+
+            statement.setInt(1, comment.getItem().getId());
+            statement.setInt(2, comment.getUser().getId());
+            statement.setString(3, comment.getComment());
+
+            statement.executeUpdate();
+            statement.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<Comment> getComments(int itemId){
+
+        ArrayList<Comment> comments = new ArrayList<>();
+
+        try{
+
+            PreparedStatement statement = connection.prepareStatement("" +
+                    "SELECT c.id, c.item_id, c.comment, c.post_date, c.user_id, u.full_name, u.email " +
+                    "FROM comments c " +
+                    "INNER JOIN users u ON u.id = c.user_id " +
+                    "WHERE c.item_id = ? " +
+                    "ORDER BY c.post_date DESC ");
+
+            statement.setInt(1, itemId);
+
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()){
+
+                Comment comment = new Comment();
+                comment.setId(resultSet.getInt("id"));
+                comment.setComment(resultSet.getString("comment"));
+                comment.setPostDate(resultSet.getTimestamp("post_date"));
+
+                Item item = new Item();
+                item.setId(resultSet.getInt("item_id"));
+                comment.setItem(item);
+
+                User user = new User();
+                user.setId(resultSet.getInt("user_id"));
+                user.setFullName(resultSet.getString("full_name"));
+                user.setEmail(resultSet.getString("email"));
+                comment.setUser(user);
+
+                comments.add(comment);
+            }
+            statement.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return comments;
+    }
 }

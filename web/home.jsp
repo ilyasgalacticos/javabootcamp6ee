@@ -16,7 +16,7 @@
     %>
     <form action="/" method="get">
         <div class="row">
-            <div class="col-4">
+            <div class="col-3">
                 <input type="search" class="form-control"
                        name="name" placeholder="Insert name" value="<%=(name!=null?name:"")%>">
             </div>
@@ -46,7 +46,7 @@
                 <input type="search" class="form-control"
                        name="priceTo" placeholder="Price to" value="<%=(priceTo!=null?priceTo:"")%>">
             </div>
-            <div class="col-1">
+            <div class="col-2">
                 <button class="btn btn-success w-100">SEARCH</button>
             </div>
         </div>

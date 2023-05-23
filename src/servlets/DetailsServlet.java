@@ -1,9 +1,6 @@
 package servlets;
 
-import db.Country;
-import db.DBConnector;
-import db.DBManager;
-import db.Item;
+import db.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,8 +18,11 @@ public class DetailsServlet extends HttpServlet {
         try{
             int idInt = Integer.parseInt(id);
             Item item = DBConnector.getItem(idInt);
-            req.setAttribute("tovar", item);
-
+            if(item!=null){
+                req.setAttribute("tovar", item);
+                ArrayList<Comment> comments = DBConnector.getComments(item.getId());
+                req.setAttribute("comments", comments);
+            }
             ArrayList<Country> countries = DBConnector.getCountries();
             req.setAttribute("strany", countries);
 

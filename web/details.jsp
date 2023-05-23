@@ -1,6 +1,5 @@
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="db.Item" %>
-<%@ page import="db.Country" %>
+<%@ page import="db.*" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -8,7 +7,7 @@
 </head>
 <body>
 <%@include file="navbar.jsp" %>
-<div class="container mt-5">
+<div class="container mt-5 mb-5 pb-5">
     <div class="row">
         <div class="col-6 mx-auto">
             <%
@@ -178,8 +177,49 @@
             <%
                 }
             %>
+            <hr class="mt-5">
             <%
-            } else {
+                if (currentUser != null) {
+            %>
+            <form action="/add-comment" method="post">
+                <input type="hidden" name="item_id" value="<%=item.getId()%>">
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <textarea class="form-control" name="comment" placeholder="Comment"></textarea>
+                        <button class="btn btn-success mt-3">ADD COMMENT</button>
+                    </div>
+                </div>
+            </form>
+            <%
+                }
+            %>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="list-group">
+                        <%
+                            ArrayList<Comment> comments = DBConnector.getComments(item.getId());
+                            if (comments != null){
+                                for(Comment comment : comments){
+                        %>
+                            <a href="JavaScript:void(0)" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1"><%=comment.getUser().getFullName()%></h5>
+                                    <small class="text-body-secondary"><%=comment.getPostDate()%></small>
+                                </div>
+                                <p class="mb-1"><%=comment.getComment()%></p>
+                            </a>
+                        <%
+                                }
+                            }
+                        %>
+                    </div>
+                </div>
+            </div>
+
+            <%
+                }
+                else
+                {
             %>
             <h4 class="text-center">ITEM NOT FOUND</h4>
             <%
